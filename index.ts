@@ -21,12 +21,17 @@ function addNewPizza(name, price) {
     menu.push(newPizza)
     console.log(`${newPizza.name} pizza added succesfsfully to the menu!`)
   } else {
-    console.log(`${newPizza.name} piza is already on the menu.`)
+    console.error(`${newPizza.name} piza is already on the menu.`)
   }
 }
 
 function placeOrder(pizzaName) {
   const selectedPizza = menu.find(pizzaObj => pizzaObj.name === pizzaName)
+  if (!selectedPizza) {
+    console.log(`${pizzaName} does not exist in the menu`)
+    return
+  }
+
   cashInRegister += selectedPizza.price
   const newOrder = { pizza: selectedPizza, status: 'ordered', id: nextOrderId += 1 }
   orderQueue.push(newOrder)
@@ -37,12 +42,12 @@ function placeOrder(pizzaName) {
 }
 
 function completeOrder(orderId) {
-  const correctOrder = orderQueue.find(orderObj => orderObj.id === orderId)
+  const order = orderQueue.find(orderObj => orderObj.id === orderId)
 
-  correctOrder.status = 'completed'
+  order.status = 'completed'
 
-  console.log(correctOrder)
-  return correctOrder
+  console.log(order)
+  return order
 }
 
 addNewPizza('BBQ', 10)
