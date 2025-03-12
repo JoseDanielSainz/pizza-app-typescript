@@ -1,3 +1,14 @@
+type Pizza = {
+  name: string
+  price: number
+}
+
+type Order = {
+  id: number
+  pizza: Pizza
+  status: string
+}
+
 const menu = [
   { name: 'Margherita', price: 8 },
   { name: 'Pepperoni', price: 10 },
@@ -6,26 +17,14 @@ const menu = [
 ]
 
 let cashInRegister = 100
-const orderQueue = []
 let nextOrderId = 0
+const orderQueue: Order[] = []
 
-function addNewPizza(name, price) {
-  const newPizza = {
-    name: name,
-    price: price
-  }
-
-  const exists = menu.find(pizza => pizza.name === newPizza.name)
-
-  if (!exists) {
-    menu.push(newPizza)
-    console.log(`${newPizza.name} pizza added succesfsfully to the menu!`)
-  } else {
-    console.error(`${newPizza.name} piza is already on the menu.`)
-  }
+function addNewPizza(pizzaObj: Pizza) {
+  menu.push(pizzaObj)
 }
 
-function placeOrder(pizzaName) {
+function placeOrder(pizzaName: string) {
   const selectedPizza = menu.find(pizzaObj => pizzaObj.name === pizzaName)
   if (!selectedPizza) {
     console.log(`${pizzaName} does not exist in the menu`)
@@ -33,24 +32,31 @@ function placeOrder(pizzaName) {
   }
 
   cashInRegister += selectedPizza.price
-  const newOrder = { pizza: selectedPizza, status: 'ordered', id: nextOrderId += 1 }
+  const newOrder: Order = {
+    id: nextOrderId += 1,
+    pizza: {
+      name: selectedPizza.name,
+      price: selectedPizza.price
+    },
+    status: 'ordered',
+  }
+
   orderQueue.push(newOrder)
-
   console.log(`Order: ${selectedPizza.name} Status: ${newOrder.status}`)
-
   return newOrder
 }
 
-function completeOrder(orderId) {
-  const order = orderQueue.find(orderObj => orderObj.id === orderId)
-
+function completeOrder(orderId: number) {
+  const order = orderQueue.find(order => order.id === orderId)
+  if (!order) {
+    console.log(`${orderId} was not found in the order queue`)
+    throw new Error()
+  }
   order.status = 'completed'
-
-  console.log(order)
   return order
 }
 
-addNewPizza('BBQ', 10)
+addNewPizza({ name: 'BBQ Chicken', price: 12 })
 
 placeOrder('BBQ')
 placeOrder('Margherita')
