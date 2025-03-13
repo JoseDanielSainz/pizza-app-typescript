@@ -1,4 +1,5 @@
 type Pizza = {
+  id: number
   name: string
   price: number
 }
@@ -9,11 +10,11 @@ type Order = {
   status: 'ordered' | 'completed'
 }
 
-const menu = [
-  { name: 'Margherita', price: 8 },
-  { name: 'Pepperoni', price: 10 },
-  { name: 'Hawaiian', price: 10 },
-  { name: 'Veggie', price: 9 },
+const menu: Pizza[] = [
+  { id: 1, name: 'Margherita', price: 8 },
+  { id: 2, name: 'Pepperoni', price: 10 },
+  { id: 3, name: 'Hawaiian', price: 10 },
+  { id: 4, name: 'Veggie', price: 9 },
 ]
 
 let cashInRegister = 100
@@ -34,10 +35,7 @@ function placeOrder(pizzaName: string) {
   cashInRegister += selectedPizza.price
   const newOrder: Order = {
     id: nextOrderId += 1,
-    pizza: {
-      name: selectedPizza.name,
-      price: selectedPizza.price
-    },
+    pizza: selectedPizza,
     status: 'ordered',
   }
 
@@ -56,7 +54,17 @@ function completeOrder(orderId: number) {
   return order
 }
 
-addNewPizza({ name: 'BBQ Chicken', price: 12 })
+function getPizzaDetail(identifier: string | number): Pizza | undefined {
+  if (typeof identifier === 'string') {
+    return menu.find(pizza => pizza.name === identifier)
+  } else if (typeof identifier === 'number') {
+    return menu.find(pizza => pizza.id === identifier)
+  } else {
+    throw new TypeError('Parameter `identifier` must be either a string or a number')
+  }
+}
+
+addNewPizza({ id: 5, name: 'BBQ Chicken', price: 12 })
 
 placeOrder('BBQ')
 placeOrder('Margherita')
